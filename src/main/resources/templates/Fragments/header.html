@@ -1,0 +1,62 @@
+<!-- fragments/header.html -->
+<div th:fragment="siteHeader">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+
+                <!-- Logo -->
+                <a class="navbar-brand" th:href="@{/}">Táo Phone</a>
+
+                <!-- Toggle button -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarNav" aria-controls="navbarNav"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Menu -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/}">Trang Chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/dienthoai}">Điện Thoại</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/phukien}">Phụ Kiện</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/lienhe}">Liên Hệ</a></li>
+                    </ul>
+
+                    <!-- Search + Tài khoản + Giỏ hàng -->
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <form class="form-inline" th:action="@{/search}" method="get">
+                                <input class="form-control mr-2" type="text" name="q" placeholder="Tìm kiếm">
+                                <button class="btn btn-outline-success" type="submit">Tìm</button>
+                            </form>
+                        </li>
+                        <li class="nav-item" th:if="${username == null}">
+                            <a class="nav-link" th:href="@{/register}">Đăng Ký</a>
+                        </li>
+                        <li class="nav-item" th:if="${username == null}">
+                            <a class="nav-link" th:href="@{/login}">Đăng Nhập</a>
+                        </li>
+                        <li class="nav-item dropdown" th:if="${username != null}">
+                            <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Xin chào, <span th:text="${username}">User</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" th:href="@{/account}">Tài khoản</a>
+                                <a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cart}">
+                                <img src="/images/cartx2.png" width="28" height="28" alt="Cart">
+                                <span class="badge badge-danger" th:text="${cartCount}">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+</div>

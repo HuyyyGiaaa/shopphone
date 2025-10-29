@@ -1,0 +1,72 @@
+/* Banner sale nâng cấp */
+#sale-banner {
+    position: relative;
+    margin-top: 30px;
+}
+
+#sale-banner img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* Text overlay */
+#sale-banner .sale-text {
+    position: absolute;
+    top: 50%;
+    left: 5%; /* chữ canh sát trái */
+    transform: translateY(-50%);
+    color: #ffeb3b; /* màu vàng nổi bật */
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    animation: blinkText 1.8s infinite alternate;
+    max-width: 50%;
+}
+
+/* Tiêu đề lớn */
+#sale-banner h2 {
+    font-size: 3.2rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+/* Mô tả nhỏ hơn */
+#sale-banner p {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+/* Nút “Mua ngay” nhấp nháy */
+.btn-sale {
+    font-size: 1.4rem;
+    padding: 12px 35px;
+    border-radius: 50px;
+    background: #e53935;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    animation: pulseBtn 2s infinite;
+}
+
+.btn-sale:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* Hiệu ứng nhấp nháy chữ */
+@keyframes blinkText {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Hiệu ứng nhấp nháy nút */
+@keyframes pulseBtn {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.85; }
+    100% { transform: scale(1); opacity: 1; }
+}
