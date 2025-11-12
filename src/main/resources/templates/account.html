@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tài khoản của tôi</title>
+
+    <!-- Bootstrap CSS (CDN giống Home) -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- CSS chung toàn site -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+<body>
+
+<!-- Gọi fragment header -->
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="account-container">
+    <h3 class="mb-3">Thông tin tài khoản</h3>
+    <form th:action="@{/account/update}" th:object="${user}" method="post" class="card p-3 shadow-sm">
+
+        <!-- Username (chỉ để xem, không đổi) -->
+        <div class="form-group">
+            <label>Tên đăng nhập:</label>
+            <input type="text" th:field="*{username}" class="form-control" readonly>
+        </div>
+
+        <!-- Họ tên người nhận hàng -->
+        <div class="form-group">
+            <label>Họ tên người dùng:</label>
+            <input type="text" th:field="*{fullname}" class="form-control" placeholder="Nhập họ tên đầy đủ">
+        </div>
+
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="Nhập email">
+        </div>
+
+        <div class="form-group">
+            <label>Số điện thoại:</label>
+            <input type="text" th:field="*{phone}" class="form-control" placeholder="Nhập số điện thoại">
+        </div>
+
+        <div class="form-group">
+            <label>Địa chỉ nhận hàng:</label>
+            <input type="text" th:field="*{address}" class="form-control" placeholder="Nhập địa chỉ nhận hàng">
+        </div>
+
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </div>
+    </form>
+
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJ+Y3WxZmf0jV+Zrj6UU+Rk+3Bz5lF0qPEw5s="
+        crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2LcR9gqGAJn5c1z/rWYIh6nq8R+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+</body>
+</html>

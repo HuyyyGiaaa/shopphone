@@ -1,37 +1,30 @@
 package com.example.shopphone.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "mausac")
 public class MauSac {
+
     @Id
-    private Integer idmau;
-    private String mausac;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idmau;
 
-    public MauSac() {
-    }
+    @Column(name = "ten_mau") // map đúng tên cột trong DB
+    private String tenMau;
 
-    public MauSac(Integer idmau, String mausac) {
-        this.idmau = idmau;
-        this.mausac = mausac;
-    }
+    // Bỏ Long idmay cũ, dùng ManyToOne
+    @ManyToOne
+    @JoinColumn(name = "idmay") // trùng với cột idmay trong DB
+    private DongMay dongMay;
 
-    public Integer getIdmau() {
-        return idmau;
-    }
+    // Các getter/setter
+    public Long getIdmau() { return idmau; }
+    public void setIdmau(Long idmau) { this.idmau = idmau; }
 
-    public void setIdmau(Integer idmau) {
-        this.idmau = idmau;
-    }
+    public String getTenMau() { return tenMau; }
+    public void setTenMau(String tenMau) { this.tenMau = tenMau; }
 
-    public String getMausac() {
-        return mausac;
-    }
-
-    public void setMausac(String mausac) {
-        this.mausac = mausac;
-    }
+    public DongMay getDongMay() { return dongMay; }
+    public void setDongMay(DongMay dongMay) { this.dongMay = dongMay; }
 }

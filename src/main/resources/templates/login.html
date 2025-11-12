@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập - ShopPhone</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>Đăng nhập</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/login" method="post">
+                        <div class="form-group">
+                            <label for="account">Tên đăng nhập / Email / SĐT</label>
+                            <input type="text" class="form-control" id="account" name="account"
+                                   placeholder="Nhập username, email hoặc số điện thoại" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                   placeholder="Nhập mật khẩu" required>
+                        </div>
+
+                        <!-- Thông báo lỗi -->
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                            <a href="/register" class="btn btn-link">Đăng ký</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+</body>
+</html>

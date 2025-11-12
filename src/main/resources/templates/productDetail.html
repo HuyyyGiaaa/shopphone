@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="|${product.tenhh} - Chi tiết sản phẩm|">Chi tiết sản phẩm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        .product-image { max-width: 100%; border-radius: 6px; }
+        .price { font-size: 1.6rem; font-weight: 700; color: #e74c3c; }
+        .stock-badge { font-size: 0.9rem; }
+        .popup-message {
+            position: fixed; top: 20px; right: 20px; padding: 10px 20px;
+            border-radius: 5px; color: #fff; display: none; z-index: 9999;
+        }
+        .popup-message.show { display: block; }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <img th:src="@{'/images/' + ${product.hinh}}" th:alt="${product.tenhh}" class="product-image img-fluid">
+
+            <p>Mô tả: <span th:text="${product.mota}">Mô tả</span></p>
+
+        </div>
+
+        <div class="col-md-6">
+            <h2 th:text="${product.tenhh}">Tên sản phẩm</h2>
+            <p class="price" id="priceDisplay"
+               th:text="${#numbers.formatInteger(product.dongia, 0)} + ' ₫'"
+               th:attr="data-base-price=${product.dongia}">0₫</p>
+
+
+            <!-- Dòng máy (Series) -->
+            <div class="mb-3">
+                <label for="dongMaySelect">Dòng máy</label>
+                <select id="dongMaySelect" class="form-control">
+                    <option value="">-- Chọn dòng máy --</option>
+                    <option th:each="dm : ${dongMays}"
+                            th:value="${dm.dongMay.idmay}"
+                            th:text="${dm.tenhh}"
+                            th:selected="${dm.dongMay.idmay} == ${product.dongMay.idmay}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Màu sắc -->
+            <div class="mb-3">
+                <label for="colorSelect">Màu sắc</label>
+                <select id="colorSelect" class="form-control">
+                    <option value="">-- Chọn màu --</option>
+                    <option th:each="c : ${colors}"
+                            th:value="${c.idmau}"
+                            th:text="${c.mauSac != null ? c.mauSac.tenMau : '-'}"
+                            th:data-dongmay="${c.dongMay != null ? c.dongMay.idmay : ''}"
+                            th:data-price="${c.dongia}"
+                            th:data-stock="${c.soluongton}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Bộ nhớ -->
+            <div class="mb-3">
+                <label for="gbSelect">Bộ nhớ</label>
+                <select id="gbSelect" class="form-control">
+                    <option value="">-- Chọn dung lượng --</option>
+                    <option th:each="b : ${product.bonhoList}"
+                            th:value="${b.idbonho}"
+                            th:text="${b.dungluong}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <span>Kho hàng: </span>
+                <span id="stockInfo" class="badge badge-info stock-badge">-</span>
+            </div>
+
+            <div class="mb-3">
+                <button id="addToCart" class="btn btn-primary btn-lg">Thêm vào giỏ</button>
+            </div>
+
+            <hr />
+            <h6>Thông tin chi tiết</h6>
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>Dòng máy</th>
+                    <th>Màu</th>
+                    <th>Bộ nhớ</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng còn</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="infoDongMay">-</td>
+                    <td id="infoMau">-</td>
+                    <td id="infoBonHo">-</td>
+                    <td id="infoGia">0₫</td>
+                    <td id="infoStock">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: siteFooter"></div>
+<div id="popupMessage" class="popup-message"></div>
+
+<script th:inline="javascript">
+    const productId = [[${product.mahh}]];
+</script>
+
+<script th:inline="javascript">
+    const dongMaySelect = document.getElementById("dongMaySelect");
+    const colorSelect = document.getElementById("colorSelect");
+    const gbSelect = document.getElementById("gbSelect");
+    const priceDisplay = document.getElementById("priceDisplay");
+    const stockInfo = document.getElementById("stockInfo");
+
+    const infoDongMay = document.getElementById("infoDongMay");
+    const infoMau = document.getElementById("infoMau");
+    const infoBonHo = document.getElementById("infoBonHo");
+    const infoGia = document.getElementById("infoGia");
+    const infoStock = document.getElementById("infoStock");
+
+    function updateInfo() {
+        const selectedDongMayText = dongMaySelect.options[dongMaySelect.selectedIndex]?.text || "-";
+        const selectedMauText = colorSelect.options[colorSelect.selectedIndex]?.text || "-";
+        const selectedBonHoText = gbSelect.options[gbSelect.selectedIndex]?.text || "-";
+
+        const selectedOption = colorSelect.options[colorSelect.selectedIndex];
+        const price = selectedOption?.dataset.price || priceDisplay.dataset.basePrice;
+        const stock = selectedOption?.dataset.stock || "-";
+
+        priceDisplay.textContent = Number(price).toLocaleString('vi-VN') + " ₫";
+        stockInfo.textContent = stock;
+
+        infoDongMay.textContent = selectedDongMayText;
+        infoMau.textContent = selectedMauText;
+        infoBonHo.textContent = selectedBonHoText;
+        infoGia.textContent = Number(price).toLocaleString('vi-VN') + " ₫";
+        infoStock.textContent = stock;
+    }
+
+    // Lọc màu theo dòng máy
+    dongMaySelect.addEventListener("change", function() {
+        const selectedDongMayId = this.value;
+        Array.from(colorSelect.options).forEach(option => {
+            if(option.value === "") return;
+            option.hidden = option.dataset.dongmay != selectedDongMayId;
+        });
+
+        // Chọn màu đầu tiên
+        let firstVisible = Array.from(colorSelect.options).find(o => !o.hidden)?.value;
+        colorSelect.value = firstVisible || "";
+        updateInfo();
+    });
+
+    colorSelect.addEventListener("change", updateInfo);
+    gbSelect.addEventListener("change", updateInfo);
+
+    function showPopup(message, color="#333") {
+        const popup = document.getElementById("popupMessage");
+        popup.textContent = message;
+        popup.style.backgroundColor = color;
+        popup.classList.add("show");
+        setTimeout(() => popup.classList.remove("show"), 2000);
+    }
+
+    document.getElementById("addToCart").addEventListener("click", function() {
+        const dongMay = dongMaySelect.value;
+        const color = colorSelect.value;
+        const memory = gbSelect.value;
+
+        if(!dongMay || !color || !memory) {
+            showPopup(" Vui lòng chọn đầy đủ Dòng máy, Màu và Bộ nhớ!", "#d9534f");
+            return;
+        }
+
+            // Gửi AJAX JSON tới endpoint /cart/addJson để không chuyển trang,
+            // endpoint trả JSON {status:'ok', cartCount: N} hoặc {status:'error', code:401}
+            fetch('/cart/addJson', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idhanghoa: Number(productId), idmau: Number(color), idmay: Number(dongMay), idbonho: Number(memory), quantity: 1 })
+            }).then(async res => {
+                const data = await res.json().catch(() => ({}));
+                console.log("Response status:", res.status, "Data:", data);
+
+                // Kiểm tra code 401 (unauthorized)
+                if (data && data.code === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Kiểm tra status === 'ok' (thêm thành công)
+                if (data && data.status === 'ok') {
+                    // Cập nhật badge số lượng trong header
+                    const badge = document.querySelector('.navbar .badge-danger') || document.querySelector('.badge');
+                    if (badge) badge.textContent = data.cartCount != null ? data.cartCount : badge.textContent;
+                    showPopup(' ✓ Đã thêm vào giỏ hàng!', '#28a745');
+                } else {
+                    // Nếu không success, hiện lỗi
+                    console.error("Add to cart failed:", data);
+                    showPopup(' Lỗi: ' + (data?.message || 'Không thể thêm sản phẩm'), '#d9534f');
+                }
+            }).catch(err => {
+                console.error("Fetch error:", err);
+                showPopup(' Lỗi mạng!', '#d9534f');
+            });
+    });
+
+    // Tự động chọn dòng máy và màu khi load
+    window.addEventListener("DOMContentLoaded", function() {
+        const defaultDongMayId = [[${product.dongMay != null ? product.dongMay.idmay : 0}]];
+        let firstColorId = Array.from(colorSelect.options).find(o => o.dataset.dongmay == defaultDongMayId)?.value;
+
+        if(defaultDongMayId) dongMaySelect.value = defaultDongMayId;
+        if(firstColorId) colorSelect.value = firstColorId;
+
+        updateInfo();
+    });
+</script>
+</body>
+</html>

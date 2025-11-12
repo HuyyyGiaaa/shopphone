@@ -2,10 +2,12 @@ package com.example.shopphone.repository;
 
 import com.example.shopphone.model.DongMay;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@Repository
-public interface DongMayRepository extends JpaRepository<DongMay, Integer> {
-    // tên phương thức phải đúng tên trường trong entity: 'tenmay'
+public interface DongMayRepository extends JpaRepository<DongMay, Long> {
+    // ✅ Tìm DongMay theo LoaiHang.maloai (đã dùng Long)
+    List<DongMay> findByLoaiHang_Maloai(Long maloai);
+
+    // ✅ Tìm theo tên dòng máy
     DongMay findByTenmay(String tenmay);
 }

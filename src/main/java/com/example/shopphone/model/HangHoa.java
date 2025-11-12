@@ -2,7 +2,7 @@ package com.example.shopphone.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.text.DecimalFormat;
 
@@ -12,28 +12,46 @@ public class HangHoa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer mahh;
+    private Long mahh;
 
     private String tenhh;
     private Float giamgia;
+    private Float dongia;
     private String hinh;
-    private Integer maloai;
-    private Boolean dacbiet;
     private Integer soluongxem;
     private String mota;
     private LocalDate ngaylap;
-    private Float dongia;
 
-    @ElementCollection
-    private List<Integer> bonhoOptions;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idmay")
     private DongMay dongMay;
 
+    // ✅ Cascade ALL + orphanRemoval để tự động thêm/xóa CTHangHoa
+    @OneToMany(mappedBy = "hangHoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<CTHangHoa> ctHangHoaList = new ArrayList<>();
+
+
+
+    // --- Phương thức tiện ích ---
+    @Transient
+    public List<BoNho> getBonhoList() {
+        if (ctHangHoaList == null) return List.of();
+        return ctHangHoaList.stream()
+                .map(CTHangHoa::getBoNho)
+                .distinct()
+                .toList();
+    }
+
+    @Transient
+    public String getDongiaVn() {
+        if (dongia == null) return "0₫";
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(dongia).replace(",", ".") + "₫";
+    }
+
     // --- Getters & Setters ---
-    public Integer getMahh() { return mahh; }
-    public void setMahh(Integer mahh) { this.mahh = mahh; }
+    public Long getMahh() { return mahh; }
+    public void setMahh(Long mahh) { this.mahh = mahh; }
 
     public String getTenhh() { return tenhh; }
     public void setTenhh(String tenhh) { this.tenhh = tenhh; }
@@ -41,20 +59,11 @@ public class HangHoa {
     public Float getDongia() { return dongia; }
     public void setDongia(Float dongia) { this.dongia = dongia; }
 
-    public List<Integer> getBonhoOptions() { return bonhoOptions; }
-    public void setBonhoOptions(List<Integer> bonhoOptions) { this.bonhoOptions = bonhoOptions; }
-
     public Float getGiamgia() { return giamgia; }
     public void setGiamgia(Float giamgia) { this.giamgia = giamgia; }
 
     public String getHinh() { return hinh; }
     public void setHinh(String hinh) { this.hinh = hinh; }
-
-    public Integer getMaloai() { return maloai; }
-    public void setMaloai(Integer maloai) { this.maloai = maloai; }
-
-    public Boolean getDacbiet() { return dacbiet; }
-    public void setDacbiet(Boolean dacbiet) { this.dacbiet = dacbiet; }
 
     public Integer getSoluongxem() { return soluongxem; }
     public void setSoluongxem(Integer soluongxem) { this.soluongxem = soluongxem; }
@@ -68,16 +77,6 @@ public class HangHoa {
     public DongMay getDongMay() { return dongMay; }
     public void setDongMay(DongMay dongMay) { this.dongMay = dongMay; }
 
-    // --- Khởi tạo danh sách bộ nhớ ---
-    public void initBonhoOptions() {
-        bonhoOptions = Arrays.asList(64, 128, 256, 512, 1024);
-    }
-
-    // --- PHƯƠNG THỨC MỚI: Trả về giá VNĐ ---
-    @Transient
-    public String getDongiaVn() {
-        if (dongia == null) return "0₫";
-        DecimalFormat df = new DecimalFormat("#,###");
-        return df.format(dongia).replace(",", ".") + "₫";
-    }
+    public List<CTHangHoa> getCtHangHoaList() { return ctHangHoaList; }
+    public void setCtHangHoaList(List<CTHangHoa> ctHangHoaList) { this.ctHangHoaList = ctHangHoaList; }
 }

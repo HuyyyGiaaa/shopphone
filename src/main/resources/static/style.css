@@ -1,0 +1,74 @@
+.popup-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #333;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(-20px);
+  z-index: 9999;
+}
+.popup-message.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* khoảng cách avatar và username */
+}
+
+.avatar-icon {
+    width: 32px;       /* kích thước avatar */
+    height: 32px;
+    border-radius: 50%; /* hình tròn */
+    object-fit: cover;   /* ảnh không bị méo */
+    border: 1px solid #ccc; /* tùy chọn viền */
+}
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Giúp navbar hiển thị đồng bộ giữa các trang */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar {
+  background-color: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+  font-weight: 600;
+  color: #333 !important;
+}
+
+.nav-link {
+  color: #333 !important;
+  font-weight: 500;
+  margin: 0 6px;
+}
+
+.nav-link:hover {
+  color: #0071e3 !important;
+}
+
+.dropdown-menu {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.dropdown-item:hover {
+  background-color: #f2f2f2;
+}

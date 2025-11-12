@@ -4,45 +4,69 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Composite id class for CTHangHoa (idhanghoa, idmau, idsize)
+ * Composite id class for CTHangHoa (mahh, idmau, idmay, idbonho)
  * implements Serializable → cho phép Hibernate tuần tự hóa khóa chính phức hợp.
- *
- * private static final long serialVersionUID = 1L;
- * → là mã phiên bản để đảm bảo tính tương thích khi class thay đổi giữa các phiên bản (rất quan trọng khi lưu cache hoặc truyền qua mạng).
  */
 public class CTHangHoaId implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
-    private int idhanghoa;
-    private int idmau;
-    private int idmay;
+    // === Các trường Long tương ứng với @MapsId trong entity ===
+    private Long mahh;
+    private Long idmau;
+    private Long idmay;
+    private Long idbonho;
 
-    public CTHangHoaId() {}
-
-    public CTHangHoaId(int idhanghoa, int idmau, int idmay) {
-        this.idhanghoa = idhanghoa;
-        this.idmau = idmau;
-        this.idmay = idmay;
+    // === Constructor mặc định ===
+    public CTHangHoaId() {
     }
 
-    public int getIdhanghoa() { return idhanghoa; }
-    public void setIdhanghoa(int idhanghoa) { this.idhanghoa = idhanghoa; }
-    public int getIdmau() { return idmau; }
-    public void setIdmau(int idmau) { this.idmau = idmau; }
-    public int getIdmay() { return idmay; }
-    public void setIdmay(int idmay) { this.idmay = this.idmay; }
+    // === Constructor đầy đủ ===
+    public CTHangHoaId(Long mahh, Long idmau, Long idmay, Long idbonho) {
+        this.mahh = mahh;
+        this.idmau = idmau;
+        this.idmay = idmay;
+        this.idbonho = idbonho;
+    }
 
+    // === Getter & Setter ===
+    public Long getMahh() { return mahh; }
+    public void setMahh(Long mahh) { this.mahh = mahh; }
+
+    public Long getIdmau() { return idmau; }
+    public void setIdmau(Long idmau) { this.idmau = idmau; }
+
+    public Long getIdmay() { return idmay; }
+    public void setIdmay(Long idmay) { this.idmay = idmay; }
+
+    public Long getIdbonho() { return idbonho; }
+    public void setIdbonho(Long idbonho) { this.idbonho = idbonho; }
+
+    // === equals & hashCode chuẩn Hibernate ===
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof CTHangHoaId)) return false;
         CTHangHoaId that = (CTHangHoaId) o;
-        return idhanghoa == that.idhanghoa && idmau == that.idmau
-                && idmay == that.idmay;
+        return Objects.equals(mahh, that.mahh) &&
+                Objects.equals(idmau, that.idmau) &&
+                Objects.equals(idmay, that.idmay) &&
+                Objects.equals(idbonho, that.idbonho);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idhanghoa, idmau, idmay);
+        return Objects.hash(mahh, idmau, idmay, idbonho);
+    }
+
+    // === toString tiện debug ===
+    @Override
+    public String toString() {
+        return "CTHangHoaId{" +
+                "mahh=" + mahh +
+                ", idmau=" + idmau +
+                ", idmay=" + idmay +
+                ", idbonho=" + idbonho +
+                '}';
     }
 }

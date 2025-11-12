@@ -13,13 +13,19 @@
 <body>
 
 <!-- Header fragment -->
-<div th:replace="fragments/header :: siteHeader"></div>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <div class="container py-5">
 
-    <h2 class="mb-4 text-center font-weight-bold">
+    <!-- Tiêu đề trang (tự động hiển thị danh mục nếu có) -->
+    <h2 class="mb-4 text-center font-weight-bold"
+        th:text="${tenLoai != null ? 'Danh mục: ' + tenLoai : 'Tất cả sản phẩm'}">
         Tất cả sản phẩm
     </h2>
+
+    <!-- Dòng phụ hiển thị tên danh mục nhỏ hơn -->
+    <p class="text-muted text-center" th:if="${tenLoai != null}"
+       th:text="${'Danh mục hiện tại: ' + tenLoai}"></p>
 
     <!-- Thông báo khi không có sản phẩm -->
     <div th:if="${allProducts == null or allProducts.size() == 0}" class="alert alert-warning text-center">
@@ -27,40 +33,42 @@
     </div>
 
     <!-- Danh sách sản phẩm -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" th:each="product : ${allProducts}">
-        <div class="card h-100 shadow-sm border-0">
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" th:each="product : ${allProducts}">
+            <div class="card h-100 shadow-sm border-0">
 
-            <!-- Ảnh sản phẩm -->
-            <img th:src="@{'/images/' + ${product.hinh}}" th:alt="${product.tenhh}" class="card-img-top">
+                <!-- Ảnh sản phẩm -->
+                <img th:src="@{'/images/' + ${product.hinh}}" th:alt="${product.tenhh}" class="card-img-top">
 
-            <!-- Tên & giá sản phẩm -->
-            <div class="card-body text-center">
-                <h5 th:text="${product.tenhh}">Tên sản phẩm</h5>
-                <p class="text-danger text-center font-weight-bold"
-                   th:text="${product.dongiaVn}">Giá sản phẩm</p>
+                <!-- Tên & giá sản phẩm -->
+                <div class="card-body text-center">
+                    <h5 th:text="${product.tenhh}">Tên sản phẩm</h5>
+                    <p class="text-danger font-weight-bold" th:text="${product.dongiaVn}">Giá sản phẩm</p>
+                </div>
 
-                <!-- Bộ nhớ -->
-                <div th:if="${product.bonhoOptions != null}">
+                <!-- Bộ nhớ (nếu có) -->
+                <div class="card-body text-center" th:if="${product.bonhoList != null}">
                     <small>Bộ nhớ:
-                        <span th:each="b, bStat : ${product.bonhoOptions}"
-                              th:text="${b + 'GB'} + ${!bStat.last ? ', ' : ''}"></span>
+                        <span th:each="b, bStat : ${product.bonhoList}"
+                              th:text="${b >= 1024 ? (b/1024) + 'TB' : b + 'GB'} + ${!bStat.last ? ', ' : ''}"></span>
                     </small>
                 </div>
+
+                <!-- Nút xem chi tiết -->
+                <div class="card-footer text-center">
+                    <a th:href="@{/product/{id}(id=${product.mahh})}" class="btn btn-primary btn-sm">
+                        Xem chi tiết
+                    </a>
+                </div>
+
             </div>
-
-
-            <!-- Nút xem chi tiết -->
-            <div class="card-footer text-center">
-                <a th:href="@{'/product/' + ${product.mahh}}" class="btn btn-primary btn-sm">
-                    Xem chi tiết
-                </a>
-            </div>
-
         </div>
     </div>
 
-    <!-- Footer fragment -->
-<div th:replace="fragments/footer :: siteFooter"></div>
+</div>
+
+<!-- Footer fragment -->
+<div th:replace="~{fragments/footer :: siteFooter}"></div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng - Táo Phone</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 30px 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f1f1f1;
+            font-weight: 600;
+        }
+
+        tr:hover td {
+            background-color: #fafafa;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #b52a36;
+        }
+
+        .btn-quantity {
+            background-color: #007bff;
+            padding: 3px 8px;
+            font-size: 0.9rem;
+            margin: 0 3px;
+        }
+
+        .btn-quantity:hover {
+            background-color: #0056b3;
+        }
+
+        .quantity-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-cart img {
+            width: 200px;
+            opacity: 0.8;
+        }
+
+        .empty-cart h4 {
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .btn-home {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-4 mb-5">
+
+    <h2>Giỏ hàng của bạn</h2>
+
+    <!-- Nếu giỏ hàng có sản phẩm -->
+    <div th:if="${#lists.size(cartItems) > 0}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Màu</th>
+                <th>Bản máy</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Tổng</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cartItems}">
+                <td th:text="${item.tenHangHoa}">Tên sản phẩm</td>
+                <td th:text="${item.mauSac}">Màu</td>
+                <td th:text="${item.tenMay}">Bản máy</td>
+                <td>
+                    <div class="quantity-group">
+                        <button class="btn-quantity" onclick="updateQuantity(this, -1)">−</button>
+                        <span class="qty-value" th:text="${item.soluong}">1</span>
+                        <button class="btn-quantity" onclick="updateQuantity(this, 1)">+</button>
+                    </div>
+                </td>
+                <td th:text="${#numbers.formatDecimal(item.dongia, 0, 0)} + '₫'">0₫</td>
+                <td class="total-cell" th:text="${#numbers.formatDecimal(item.dongia * item.soluong, 0, 0)} + '₫'">0₫</td>
+                <td>
+                    <button class="btn-delete" onclick="deleteItem(this)">🗑️ Xóa</button>
+                    <input type="hidden" name="idhanghoa" class="idhanghoa" th:value="${item.idhanghoa}" />
+                    <input type="hidden" name="idmau" class="idmau" th:value="${item.idmau}" />
+                    <input type="hidden" name="idmay" class="idmay" th:value="${item.idmay}" />
+                    <input type="hidden" name="idbonho" class="idbonho" th:value="${item.idbonho}" />
+                    <input type="hidden" name="dongia" class="dongia" th:value="${item.dongia}" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p class="total">
+            Tổng tiền: <span th:text="${#numbers.formatDecimal(totalPrice, 0, 0)} + '₫'">0₫</span>
+        </p>
+    </div>
+
+    <!-- Nếu giỏ hàng trống -->
+    <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart">
+        <img src="/images/Cart/emptycart.png" alt="Empty Cart">
+        <h4>Giỏ hàng của bạn đang trống</h4>
+        <p>Hãy thêm sản phẩm vào giỏ để bắt đầu mua sắm!</p>
+        <a th:href="@{/}" class="btn-home">🛒 Về trang chủ</a>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: siteFooter"></div>
+
+<script>
+    function updateQuantity(btn, change) {
+        const row = btn.closest('tr');
+        const qtySpan = row.querySelector('.qty-value');
+        const totalCell = row.querySelector('.total-cell');
+        const currentQty = parseInt(qtySpan.textContent);
+        const newQty = Math.max(1, currentQty + change);
+
+        if (newQty === currentQty) return; // Không thay đổi
+
+        // Cập nhật UI
+        qtySpan.textContent = newQty;
+        const priceInput = row.querySelector('input[name="dongia"]');
+        const price = parseFloat(priceInput ? priceInput.value : 0);
+        const newTotal = (price * newQty).toLocaleString('vi-VN');
+        totalCell.textContent = newTotal + '₫';
+
+        // Gọi API để cập nhật backend
+        const idhanghoa = parseInt(row.querySelector('input[name="idhanghoa"]').value);
+        const idmau = parseInt(row.querySelector('input[name="idmau"]').value);
+        const idmay = parseInt(row.querySelector('input[name="idmay"]').value);
+        const idbonho = parseInt(row.querySelector('input[name="idbonho"]').value);
+
+        console.log('📝 Updating quantity:', { idhanghoa, idmau, idmay, idbonho, quantity: newQty });
+
+        fetch('/cart/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idhanghoa, idmau, idmay, idbonho, quantity: newQty })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Response:', data);
+            if (data && data.status === 'ok') {
+                console.log('✅ Cập nhật số lượng thành công');
+                updateTotalPrice();
+            } else {
+                console.error('❌ Lỗi cập nhật số lượng:', data);
+                alert('❌ Lỗi: ' + (data?.message || 'Không thể cập nhật'));
+                location.reload();
+            }
+        })
+        .catch(err => {
+            console.error('Fetch Error:', err);
+            alert('Lỗi mạng!');
+        });
+    }
+
+    function deleteItem(btn) {
+        if (!confirm('Bạn chắc chắn muốn xóa sản phẩm này?')) return;
+
+        const row = btn.closest('tr');
+        const idhanghoa = parseInt(row.querySelector('input[name="idhanghoa"]').value);
+        const idmau = parseInt(row.querySelector('input[name="idmau"]').value);
+        const idmay = parseInt(row.querySelector('input[name="idmay"]').value);
+        const idbonho = parseInt(row.querySelector('input[name="idbonho"]').value);
+
+        console.log('🗑️ Deleting item:', { idhanghoa, idmau, idmay, idbonho });
+
+        fetch('/cart/removeJson', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idhanghoa, idmau, idmay, idbonho })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Response:', data);
+            if (data && data.status === 'ok') {
+                console.log('✅ Xóa sản phẩm thành công');
+                row.remove();
+                updateTotalPrice();
+                // Cập nhật cartCount trong header
+                const badge = document.querySelector('.badge-danger');
+                if (badge) badge.textContent = data.cartCount || 0;
+                // Kiểm tra nếu giỏ trống, reload
+                if (document.querySelectorAll('tbody tr').length === 0) {
+                    setTimeout(() => location.reload(), 500);
+                }
+            } else {
+                console.error('❌ Lỗi xóa sản phẩm:', data);
+                alert('❌ Lỗi: ' + (data?.message || 'Không thể xóa'));
+            }
+        })
+        .catch(err => {
+            console.error('Fetch Error:', err);
+            alert('Lỗi mạng!');
+        });
+    }
+
+    function updateTotalPrice() {
+        const rows = document.querySelectorAll('tbody tr');
+        let total = 0;
+        rows.forEach(row => {
+            const totalText = row.querySelector('.total-cell').textContent;
+            // Xóa ₫ và dấu chấm phân cách (.) để lấy số nguyên
+            const price = parseFloat(totalText.replace(/₫/g, '').replace(/\./g, ''));
+            total += isNaN(price) ? 0 : price;
+        });
+        const totalSpan = document.querySelector('.total span');
+        if (totalSpan) {
+            totalSpan.textContent = total.toLocaleString('vi-VN') + '₫';
+        }
+    }
+</script>
+
+</body>
+</html>

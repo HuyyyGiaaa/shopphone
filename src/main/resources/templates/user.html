@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tài khoản của tôi</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- Header chung -->
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Tài khoản của tôi</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Tên đăng nhập:</strong> <span th:text="${session.loggedUser.username}">user</span></p>
+            <p><strong>Email:</strong> <span th:text="${session.loggedUser.email}">user@gmail.com</span></p>
+            <p><strong>Họ tên:</strong> <span th:text="${session.loggedUser.fullName}">Nguyễn Văn A</span></p>
+
+            <hr>
+            <a href="/" class="btn btn-secondary">← Quay lại trang chủ</a>
+            <a href="/logout" class="btn btn-danger float-right">Đăng xuất</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

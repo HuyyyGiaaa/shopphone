@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        /* CSS nhỏ gọn cho avatar */
+        .avatar-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header chung -->
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <div class="user-info">
+                <img th:src="@{/images/avatars/{avatar}(avatar=${user.avatar})}"
+                     class="avatar-icon" alt="Avatar">
+                <h4 class="mb-0" th:text="${user.username}">Username</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <hr>
+            <a href="/" class="btn btn-secondary">← Quay lại trang chủ</a>
+            <a href="/logout" class="btn btn-danger float-right">Đăng xuất</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
